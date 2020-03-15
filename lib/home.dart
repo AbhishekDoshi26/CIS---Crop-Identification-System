@@ -1,5 +1,4 @@
 import 'package:cis/crop_details.dart';
-import 'package:cis/selecteditem.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -64,18 +63,34 @@ class _HomePageState extends State<HomePage> {
           return AlertDialog(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            content: new SingleChildScrollView(
-              child: new ListBody(
+            content: SingleChildScrollView(
+              child: ListBody(
                 children: <Widget>[
-                  GestureDetector(
-                    child: new Text('Take a picture'),
+                  InkWell(
+                    child: Container(
+                      height: 45,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('Take a picture'),
+                        ],
+                      ),
+                    ),
                     onTap: openCamera,
                   ),
                   SizedBox(
-                    height: 30,
+                    height: 10,
                   ),
-                  GestureDetector(
-                    child: new Text('Select from gallery'),
+                  InkWell(
+                    child: Container(
+                      height: 45,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('Select from gallery'),
+                        ],
+                      ),
+                    ),
                     onTap: openGallery,
                   ),
                 ],
@@ -112,7 +127,7 @@ class _HomePageState extends State<HomePage> {
     var output = await Tflite.runModelOnImage(
       path: image.path,
       numResults: 6,
-      threshold: 0.5,
+      threshold: 0.8,
       imageMean: 127.5,
       imageStd: 127.5,
     );
@@ -149,25 +164,41 @@ class _HomePageState extends State<HomePage> {
               borderRadius: BorderRadius.circular(10),
             ),
             height: 70,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              IconButton(icon: Icon(Icons.refresh,size: 32,), tooltip: 'Refresh', onPressed: () {
-                setState(() {
-                  _imageFile=null;  
-                });
-              }),
-              IconButton(icon: Icon(Icons.power_settings_new,size: 32,), tooltip: 'Exit', onPressed: () {exit(1);}),
-            ],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                IconButton(
+                    icon: Icon(
+                      Icons.refresh,
+                      size: 32,
+                    ),
+                    tooltip: 'Refresh',
+                    onPressed: () {
+                      setState(() {
+                        _imageFile = null;
+                      });
+                    }),
+                IconButton(
+                    icon: Icon(
+                      Icons.power_settings_new,
+                      size: 32,
+                    ),
+                    tooltip: 'Exit',
+                    onPressed: () {
+                      exit(1);
+                    }),
+              ],
+            ),
           ),
-        ),),
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Container(
           height: 50.0,
           child: RawMaterialButton(
             elevation: 10,
             fillColor: Colors.deepPurpleAccent,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100)),
             onPressed: _optionsDialogBox,
             child: Icon(
               Icons.camera,
@@ -214,8 +245,11 @@ class _HomePageState extends State<HomePage> {
                         ),
                         _imageFile == null
                             ? Container(
-                              child: Image.asset('assets/images/CIS.png', scale: 1.35,),
-                            )
+                                child: Image.asset(
+                                  'assets/images/CIS.png',
+                                  scale: 1.35,
+                                ),
+                              )
                             : Padding(
                                 padding: const EdgeInsets.all(
                                   10.0,
@@ -231,13 +265,19 @@ class _HomePageState extends State<HomePage> {
                   ),
                   _imageFile == null
                       ? Container(
-                        height: 100,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text('Crop Identification System',style: TextStyle(fontSize: 28, color: Colors.white,fontWeight: FontWeight.bold),),
-                        ],
-                      ))
+                          height: 100,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Crop Identification System',
+                                style: TextStyle(
+                                    fontSize: 28,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ))
                       : Padding(
                           padding: const EdgeInsets.only(
                               top: 10, left: 10, right: 10),
@@ -302,28 +342,6 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
-                  // Padding(
-                  //   padding:
-                  //       const EdgeInsets.only(top: 10.0, left: 10, right: 80),
-                  //   child: TextField(
-                  //     style: TextStyle(
-                  //       fontSize: 22.0,
-                  //     ),
-                  //     keyboardType: TextInputType.text,
-                  //     decoration: InputDecoration(
-                  //       prefixIcon: Icon(Icons.search),
-                  //       fillColor: Colors.white,
-                  //       filled: true,
-                  //       hintText: 'search',
-                  //       border: OutlineInputBorder(
-                  //           borderRadius: BorderRadius.circular(100.0)),
-                  //       contentPadding:
-                  //           EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
-                  //     ),
-                  //     controller: search,
-                  //     onChanged: getSuggestion,
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -338,12 +356,11 @@ class _HomePageState extends State<HomePage> {
                     hintText: 'search',
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(100.0)),
-                    contentPadding:
-                        EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                    contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
                   ),
                 ),
-                suggestionsCallback: (pattern) async {
-                  return await BackendService.getSuggestions(pattern);
+                suggestionsCallback: (pattern) {
+                  return BackendService.getSuggestions(pattern);
                 },
                 suggestionsBoxDecoration: SuggestionsBoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -379,8 +396,8 @@ class _HomePageState extends State<HomePage> {
                                   datasnapshot.data['Leaf Size'].toString(),
                               soiltype:
                                   datasnapshot.data['Soil Type'].toString(),
-                              treq: datasnapshot.data['Time Required']
-                                  .toString(),
+                              treq:
+                                  datasnapshot.data['Time Required'].toString(),
                               wreq: datasnapshot.data['Water Required']
                                   .toString(),
                             ),
